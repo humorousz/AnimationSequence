@@ -29,9 +29,12 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.SystemClock;
+import android.support.annotation.IntDef;
 import android.util.Log;
 
 import java.io.InputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public class FrameSequenceDrawable extends Drawable implements Animatable, Runnable {
     private static final String TAG = "FrameSequence";
@@ -127,7 +130,10 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
      * <p>
      * Must be one of LOOP_ONCE, LOOP_INF, LOOP_DEFAULT, or LOOP_FINITE.
      */
-    public void setLoopBehavior(int loopBehavior) {
+    @IntDef({LOOP_FINITE,LOOP_INF,LOOP_DEFAULT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface LoopBehavior {}
+    public void setLoopBehavior(@LoopBehavior int loopBehavior) {
         mLoopBehavior = loopBehavior;
     }
 

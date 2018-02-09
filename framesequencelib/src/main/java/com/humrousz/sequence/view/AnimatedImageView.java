@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
+import android.support.rastermill.FrameSequence;
 import android.support.rastermill.FrameSequenceDrawable;
 import android.support.rastermill.R;
 import android.support.v7.widget.AppCompatImageView;
@@ -31,6 +32,7 @@ public class AnimatedImageView extends AppCompatImageView {
     private static final List<String> SUPPORTED_RESOURCE_TYPE_NAMES = Arrays.asList("raw", "drawable", "mipmap");
 
     private int mLoopCount = 1;
+    private int mLoopBehavior = FrameSequenceDrawable.LOOP_DEFAULT;
     private FrameSequenceDrawable mAnimatedSrcDrawable;
     private FrameSequenceDrawable mAnimatedBgDrawable;
     private OnFinishedListener mFinishedListener;
@@ -93,7 +95,14 @@ public class AnimatedImageView extends AppCompatImageView {
         };
         if(attrs != null) {
             TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.AnimatedImageView);
-            mLoopCount = attributes.getInt(R.styleable.AnimatedImageView_loopCount, 1);
+            mLoopCount = attributes.getInt(R.styleable.AnimatedImageView_loopCount, -1);
+            if (mLoopCount != -1) {
+                //set loop count so loop mode is LOOP_FINITE
+                setLoopFinite();
+            } else {
+                //not set loop count so loop mode is set value default LOOP_DEFAULT
+                mLoopBehavior = attributes.getInt(R.styleable.AnimatedImageView_loopBehavior, FrameSequenceDrawable.LOOP_DEFAULT);
+            }
             attributes.recycle();
 
             int srcId = attrs.getAttributeResourceValue(ANDROID_NS, "src", 0);
@@ -242,13 +251,28 @@ public class AnimatedImageView extends AppCompatImageView {
 
     public void setLoopCount(int count) {
         mLoopCount = count;
-        if(mAnimatedBgDrawable != null) {
+        setLoopFinite();
+        if (mAnimatedBgDrawable != null) {
             mAnimatedBgDrawable.setLoopCount(mLoopCount);
         }
-        if(mAnimatedSrcDrawable != null) {
+        if (mAnimatedSrcDrawable != null) {
             mAnimatedSrcDrawable.setLoopCount(mLoopCount);
         }
     }
+
+    public void setLoopDefault() {
+        mLoopBehavior = FrameSequenceDrawable.LOOP_DEFAULT;
+    }
+
+    public void setLoopFinite() {
+        mLoopBehavior = FrameSequenceDrawable.LOOP_FINITE;
+    }
+
+    public void setLoopInf() {
+        mLoopBehavior = FrameSequenceDrawable.LOOP_INF;
+    }
+
+
 
     public void stopAnimation(){
         if(mAnimatedSrcDrawable != null) {

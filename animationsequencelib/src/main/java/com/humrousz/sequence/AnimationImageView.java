@@ -23,11 +23,12 @@ import java.util.List;
  * @date 2018/2/8
  */
 
-public class AnimationImageView extends AppCompatImageView{
+public class AnimationImageView extends AppCompatImageView {
     private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
     private static final List<String> SUPPORTED_RESOURCE_TYPE_NAMES = Arrays.asList("raw", "drawable", "mipmap");
 
     private int mLoopCount = 1;
+    private int mLoopBehavior = AnimationSequenceDrawable.LOOP_DEFAULT;
     private AnimationSequenceDrawable mAnimatedSrcDrawable;
     private AnimationSequenceDrawable mAnimatedBgDrawable;
     private OnFinishedListener mFinishedListener;
@@ -37,7 +38,7 @@ public class AnimationImageView extends AppCompatImageView{
     public interface OnFinishedListener {
         /**
          * Called when a AnimatedImageView has finished looping.
-         *
+         * <p>
          * Note that this is will not be called if the drawable is explicitly
          * stopped, or marked invisible.
          */
@@ -84,32 +85,39 @@ public class AnimationImageView extends AppCompatImageView{
         mDrawableFinishedListener = new AnimationSequenceDrawable.OnFinishedListener() {
             @Override
             public void onFinished(AnimationSequenceDrawable drawable) {
-                if(mFinishedListener != null) {
+                if (mFinishedListener != null) {
                     mFinishedListener.onFinished();
                 }
             }
         };
         mSequenceFactory = new FrescoSequence.FrescoWebpSequenceFactory();
-        if(attrs != null) {
-            TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.AnimatedImageView);
-            mLoopCount = attributes.getInt(R.styleable.AnimatedImageView_loopCount, 1);
+        if (attrs != null) {
+            TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.AnimationImageView);
+            mLoopCount = attributes.getInt(R.styleable.AnimationImageView_loopCount, -1);
+            if (mLoopCount != -1) {
+                //set loop count so loop mode is LOOP_FINITE
+                setLoopFinite();
+            } else {
+                //not set loop count so loop mode is set value default LOOP_DEFAULT
+                mLoopBehavior = attributes.getInt(R.styleable.AnimationImageView_loopBehavior, AnimationSequenceDrawable.LOOP_DEFAULT);
+            }
             attributes.recycle();
 
             int srcId = attrs.getAttributeResourceValue(ANDROID_NS, "src", 0);
-            if(srcId > 0) {
+            if (srcId > 0) {
                 String srcTypeName = context.getResources().getResourceTypeName(srcId);
-                if(SUPPORTED_RESOURCE_TYPE_NAMES.contains(srcTypeName)) {
-                    if(!setAnimatedResource(true, srcId)) {
+                if (SUPPORTED_RESOURCE_TYPE_NAMES.contains(srcTypeName)) {
+                    if (!setAnimatedResource(true, srcId)) {
                         super.setImageResource(srcId);
                     }
                 }
             }
 
             int bgId = attrs.getAttributeResourceValue(ANDROID_NS, "background", 0);
-            if(bgId > 0) {
+            if (bgId > 0) {
                 String bgTypeName = context.getResources().getResourceTypeName(bgId);
-                if(SUPPORTED_RESOURCE_TYPE_NAMES.contains(bgTypeName)) {
-                    if(!setAnimatedResource(false, bgId)) {
+                if (SUPPORTED_RESOURCE_TYPE_NAMES.contains(bgTypeName)) {
+                    if (!setAnimatedResource(false, bgId)) {
                         super.setBackgroundResource(bgId);
                     }
                 }
@@ -122,24 +130,22 @@ public class AnimationImageView extends AppCompatImageView{
         if (res != null) {
             try {
                 InputStream inputStream = getInputStreamByResource(res, resId);
-                AnimationSequenceDrawable drawable = new AnimationSequenceDrawable(mSequenceFactory.createSequence(inputStream));
-                drawable.setLoopCount(mLoopCount);
-                drawable.setOnFinishedListener(mDrawableFinishedListener);
+                AnimationSequenceDrawable drawable = createDrawable(inputStream);
                 if (isSrc) {
                     setImageDrawable(drawable);
-                    if(mAnimatedSrcDrawable != null) {
+                    if (mAnimatedSrcDrawable != null) {
                         mAnimatedSrcDrawable.destroy();
                     }
                     mAnimatedSrcDrawable = drawable;
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     setBackground(drawable);
-                    if(mAnimatedBgDrawable != null) {
+                    if (mAnimatedBgDrawable != null) {
                         mAnimatedBgDrawable.destroy();
                     }
                     mAnimatedBgDrawable = drawable;
                 } else {
                     setBackgroundDrawable(drawable);
-                    if(mAnimatedBgDrawable != null) {
+                    if (mAnimatedBgDrawable != null) {
                         mAnimatedBgDrawable.destroy();
                     }
                     mAnimatedBgDrawable = drawable;
@@ -183,18 +189,17 @@ public class AnimationImageView extends AppCompatImageView{
 
     /**
      * Set the image from assets
+     *
      * @param path
      * @return
      */
-    public boolean setImageResourceFromAssets(String path){
+    public boolean setImageResourceFromAssets(String path) {
         AssetManager am = getContext().getResources().getAssets();
         try {
             InputStream inputStream = am.open(path);
-            AnimationSequenceDrawable drawable = new AnimationSequenceDrawable(mSequenceFactory.createSequence(inputStream));
-            drawable.setLoopCount(mLoopCount);
-            drawable.setOnFinishedListener(mDrawableFinishedListener);
+            AnimationSequenceDrawable drawable = createDrawable(inputStream);
             setImageDrawable(drawable);
-            if(mAnimatedSrcDrawable != null) {
+            if (mAnimatedSrcDrawable != null) {
                 mAnimatedSrcDrawable.destroy();
             }
             mAnimatedSrcDrawable = drawable;
@@ -210,11 +215,9 @@ public class AnimationImageView extends AppCompatImageView{
         if (uri != null) {
             try {
                 InputStream inputStream = getInputStreamByUri(imageView.getContext(), uri);
-                AnimationSequenceDrawable frameSequenceDrawable = new AnimationSequenceDrawable(mSequenceFactory.createSequence(inputStream));
-                frameSequenceDrawable.setLoopCount(mLoopCount);
-                frameSequenceDrawable.setOnFinishedListener(mDrawableFinishedListener);
+                AnimationSequenceDrawable frameSequenceDrawable = createDrawable(inputStream);
                 imageView.setImageDrawable(frameSequenceDrawable);
-                if(mAnimatedSrcDrawable != null) {
+                if (mAnimatedSrcDrawable != null) {
                     mAnimatedSrcDrawable.destroy();
                 }
                 mAnimatedSrcDrawable = frameSequenceDrawable;
@@ -224,6 +227,14 @@ public class AnimationImageView extends AppCompatImageView{
             }
         }
         return false;
+    }
+
+    private AnimationSequenceDrawable createDrawable(InputStream inputStream) {
+        AnimationSequenceDrawable frameSequenceDrawable = new AnimationSequenceDrawable(mSequenceFactory.createSequence(inputStream));
+        frameSequenceDrawable.setLoopCount(mLoopCount);
+        frameSequenceDrawable.setLoopBehavior(mLoopBehavior);
+        frameSequenceDrawable.setOnFinishedListener(mDrawableFinishedListener);
+        return frameSequenceDrawable;
     }
 
     private InputStream getInputStreamByResource(Resources resources, int resId) {
@@ -241,37 +252,29 @@ public class AnimationImageView extends AppCompatImageView{
 
     public void setLoopCount(int count) {
         mLoopCount = count;
-        if(mAnimatedBgDrawable != null) {
+        setLoopFinite();
+        if (mAnimatedBgDrawable != null) {
             mAnimatedBgDrawable.setLoopCount(mLoopCount);
         }
-        if(mAnimatedSrcDrawable != null) {
+        if (mAnimatedSrcDrawable != null) {
             mAnimatedSrcDrawable.setLoopCount(mLoopCount);
         }
     }
 
-    public void setLoopDefault(){
-        setLoopBehavior(AnimationSequenceDrawable.LOOP_DEFAULT);
+    public void setLoopDefault() {
+        mLoopBehavior = AnimationSequenceDrawable.LOOP_DEFAULT;
     }
 
-    public void setLoopFinite(){
-        setLoopBehavior(AnimationSequenceDrawable.LOOP_FINITE);
+    public void setLoopFinite() {
+        mLoopBehavior = AnimationSequenceDrawable.LOOP_FINITE;
     }
 
-    public void setLoopInf(){
-        setLoopBehavior(AnimationSequenceDrawable.LOOP_INF);
+    public void setLoopInf() {
+        mLoopBehavior = AnimationSequenceDrawable.LOOP_INF;
     }
 
-    private void setLoopBehavior(int behavior){
-        if(mAnimatedBgDrawable != null){
-            mAnimatedBgDrawable.setLoopBehavior(behavior);
-        }
-        if(mAnimatedSrcDrawable != null){
-            mAnimatedSrcDrawable.setLoopBehavior(behavior);
-        }
-    }
-
-    public void stopAnimation(){
-        if(mAnimatedSrcDrawable != null) {
+    public void stopAnimation() {
+        if (mAnimatedSrcDrawable != null) {
             mAnimatedSrcDrawable.stop();
         }
     }
@@ -280,8 +283,8 @@ public class AnimationImageView extends AppCompatImageView{
         mFinishedListener = listener;
     }
 
-    public void setSequenceFactory(BaseSequenceFactory factory){
-        if(factory != null){
+    public void setSequenceFactory(BaseSequenceFactory factory) {
+        if (factory != null) {
             mSequenceFactory = factory;
         }
     }
@@ -289,10 +292,10 @@ public class AnimationImageView extends AppCompatImageView{
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(mAnimatedBgDrawable != null) {
+        if (mAnimatedBgDrawable != null) {
             mAnimatedBgDrawable.destroy();
         }
-        if(mAnimatedSrcDrawable != null) {
+        if (mAnimatedSrcDrawable != null) {
             mAnimatedSrcDrawable.destroy();
         }
     }
