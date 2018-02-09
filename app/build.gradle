@@ -35,6 +35,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 //    implementation project(':AnimationSequenceDrawable')
 //    implementation project(':FrameSequenceDrawable')
-    compile 'com.github.humorousz:AnimationSequenceDrawable:1.0.0-SNAPSHOT'
+    compile 'com.github.humorousz:AnimationSequenceDrawable:5ba471e92c'
     compile 'com.github.humorousz:FrameSequenceDrawable:1.0.0-SNAPSHOT'
 }

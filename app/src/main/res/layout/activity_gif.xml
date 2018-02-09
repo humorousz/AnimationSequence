@@ -19,5 +19,6 @@
         android:id="@+id/gif_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btn"/>
+        android:layout_above="@id/btn"
+        android:src="@drawable/newyear"/>
 </RelativeLayout>
