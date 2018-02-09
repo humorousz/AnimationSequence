@@ -1,1 +1,1 @@
-include ':app', ':framesequencelib', ':animationsequencelib'
+include ':app', ':framesequencelib', ':AnimationSequenceDrawable'
