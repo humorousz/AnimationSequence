@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.humrousz.animationsequence">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".WebPActivity" />
-        <activity android:name=".GifActivity"></activity>
+        <activity android:name=".GifActivity" />
+        <activity android:name=".FrescoWebPActivity"></activity>
     </application>
 
 </manifest>
