@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.humrousz.animationsequence">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".WebPActivity" />
         <activity android:name=".GifActivity" />
-        <activity android:name=".FrescoWebPActivity"></activity>
+        <activity android:name=".FrescoWebPActivity" />
+        <activity android:name=".SequenceDrawableActivity"></activity>
     </application>
 
 </manifest>

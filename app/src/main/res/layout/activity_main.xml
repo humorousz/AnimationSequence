@@ -15,4 +15,9 @@
         android:layout_height="wrap_content"
         android:text="gif"
         android:onClick="gifClick"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="drawable"
+        android:onClick="drawableClick"/>
 </LinearLayout>

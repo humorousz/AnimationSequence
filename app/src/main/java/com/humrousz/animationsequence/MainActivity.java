@@ -22,4 +22,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this,GifActivity.class);
         startActivity(intent);
     }
+
+    public void drawableClick(View v){
+        Intent intent = new Intent(MainActivity.this,SequenceDrawableActivity.class);
+        startActivity(intent);
+    }
 }
