@@ -18,13 +18,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void gifClick(View v){
-        Intent intent = new Intent(MainActivity.this,GifActivity.class);
+    public void webFrescoClick(View v){
+        Intent intent = new Intent(MainActivity.this,FrescoWebPActivity.class);
         startActivity(intent);
     }
 
-    public void drawableClick(View v){
-        Intent intent = new Intent(MainActivity.this,SequenceDrawableActivity.class);
+    public void gifClick(View v){
+        Intent intent = new Intent(MainActivity.this,GifActivity.class);
         startActivity(intent);
     }
 }

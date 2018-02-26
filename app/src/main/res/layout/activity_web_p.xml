@@ -32,16 +32,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="drawable"
+            android:text="resource"
             android:layout_weight="1"
             android:onClick="loadFromDrawable"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="file"
+            android:text="drawable"
             android:layout_weight="1"
-            android:onClick="loadFromFile"/>
+            android:onClick="loadFromInputStream"/>
     </LinearLayout>
 
 </RelativeLayout>

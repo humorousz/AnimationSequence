@@ -5,20 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.humrousz.animationsequence.GifActivity">
-
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="gif"
-        android:onClick="gifClick"/>
-
     <com.humrousz.sequence.AnimationImageView
         android:id="@+id/gif_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/btn"
-        android:src="@drawable/newyear"/>
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:id="@+id/group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="assets"
+            android:layout_weight="1"
+            android:onClick="loadFromAssets"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="resource"
+            android:layout_weight="1"
+            android:onClick="loadFromDrawable"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="drawable"
+            android:layout_weight="1"
+            android:onClick="loadFromInputStream"/>
+    </LinearLayout>
 </RelativeLayout>

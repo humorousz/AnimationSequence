@@ -22,13 +22,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="fresco"
-            android:layout_weight="1" />
+            android:text="assets"
+            android:layout_weight="1"
+            android:onClick="loadFromAssets"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="google"
-            android:layout_weight="1" />
+            android:text="resource"
+            android:layout_weight="1"
+            android:onClick="loadFromDrawable"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="drawable"
+            android:layout_weight="1"
+            android:onClick="loadFromInputStream"/>
     </LinearLayout>
 </RelativeLayout>

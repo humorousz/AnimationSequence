@@ -4,20 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context="com.humrousz.animationsequence.MainActivity">
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="webp"
         android:onClick="webClick"/>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="webp-Fresco"
+        android:onClick="webFrescoClick"/>
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="gif"
         android:onClick="gifClick"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="drawable"
-        android:onClick="drawableClick"/>
 </LinearLayout>
